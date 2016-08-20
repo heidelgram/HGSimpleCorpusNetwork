@@ -1,9 +1,9 @@
 # Introduction
-This tool can be used to do batch frequency analysis on unreliable corpus data. Given a set of search terms and a set of text files, the script will generate an adjacency matrix, a gexf file, and a graphml file linking the search terms to the texts.
+This tool can be used to do batch frequency analysis on corrupted corpus data. Given a set of search terms and a set of text files, the script will generate an adjacency matrix, a gexf file, and a graphml file linking the search terms to the texts.
 
 ![Functionality](documentation/functionality-I.png)
 
-In order to account for unreliable data (i.e. ocr corrupted data), the search algorithm supports levenshtein distances and 
+In order to account for corrupted data (i.e. ocr-corrupted data), the search algorithm supports levenshtein distances and 
 gestalt pattern matching in order to also recognize similar (i.e. distorted) tokens. For example, the algorithm is able to recognize _do1or_* as _dolor_. This enables fairly accurate frequency estimates, even when dealing with highly corrupted data.
 
 # Requirements
