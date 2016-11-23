@@ -31,3 +31,4 @@ The script utilizes a simple linear search algorithm. Hence, the tool currently 
 
 # Known Flaws and Problems
 * The script currently fails when it encounters malformed utf8 characters. Make sure that all corpus files are correctly encoded.
+* The default value for the tokenizer (nltk) is not correctly passed to the script (you have to specify a tokenizer for it to work)
