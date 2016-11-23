@@ -17,12 +17,13 @@ Run `runHGSCN.py` and supply the following arguments:
 * -ma Matching Algorithm (either 'gestalt' or 'levenshtein')
 * -mt Matching Threshold (n steps for levenshtein or 0-1 for gestalt)
 * -pre Show Preview (either 1 or 0)
+* -icase Ignore case (either 1 or 0)
 * file_dir (the corpus directory)
 * project_name (a descriptive name for the batch)
 * search\_terms\_file (a text file with one search term per line)
 
 # Behaviour
-Both matching algorithms will ignore case. Hence, it is possible that there will be findings with a lower threshhold than the one set by the user. 
+Both matching algorithms can be set to ignore case. In this case, it is possible that there will be findings with a lower threshhold than the one set by the user. 
 Example: Comparing 'test' to 'teST' would result in a 0.5 match. Given a 0.8 threshold, the instance would not be counted. However, since case is ignored, the two terms do match. The instance will be counted and added to the findings table with the correct (0.5) measure.
 
 # Runtime

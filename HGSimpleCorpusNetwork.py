@@ -109,7 +109,7 @@ def write_finding(search_term, text, concordance, match_algorithm, confidence, p
                 ';', ',') + ';' + project_name + '\n')
 
 
-def search_word_count(search_term, text, match_threshold, match_algorithm, project_name):
+def search_word_count(search_term, text, match_threshold, match_algorithm, project_name, ignore_case):
     """Return a dictionary wwith the number of findings and a confidence using the simple tokenizer.
 
     :param search_term: the word to look for
@@ -122,6 +122,8 @@ def search_word_count(search_term, text, match_threshold, match_algorithm, proje
     :type match_algorithm: string
     :param project_name: the project's name
     :type project_name: string
+    :param ignore_case:  a boolean indicating wether case should be ignored or not
+    :type ignore_case: int
     :return: dictionary containing the instances and the average_confidence
     :rtype: dict
     """
@@ -129,15 +131,23 @@ def search_word_count(search_term, text, match_threshold, match_algorithm, proje
     confidence = []
     for line in text:
         for word in line.split():
+
+            if (ignore_case == 1):
+                compare_word = word.lower()
+                compare_search_term = search_term.lower()
+            else:
+                compare_word = word
+                compare_search_term = search_term
+
             if match_algorithm == 'gestalt':
-                if SequenceMatcher(None, search_term.lower(), word.lower()).ratio() >= match_threshold:
+                if SequenceMatcher(None, compare_search_term, compare_word).ratio() >= match_threshold:
                     confidence.append(SequenceMatcher(None, search_term, word).ratio())
                     instances += 1
                     write_finding(search_term, text, line.rstrip(), match_algorithm,
                                   SequenceMatcher(None, search_term, word).ratio(),
                                   project_name)
             else:
-                if levenshtein(search_term, word) <= match_threshold:
+                if levenshtein(compare_search_term, compare_word) <= match_threshold:
                     confidence.append(levenshtein(search_term, word))
                     instances += 1
                     write_finding(search_term, text, line.rstrip(), match_algorithm, levenshtein(search_term, word),
@@ -151,7 +161,7 @@ def search_word_count(search_term, text, match_threshold, match_algorithm, proje
     return {'instances': instances, 'average_confidence': average_confidence}
 
 
-def search_word_count_nltk(search_term, text, match_threshold, match_algorithm, project_name):
+def search_word_count_nltk(search_term, text, match_threshold, match_algorithm, project_name, ignore_case):
     """Return a dictionary wwith the number of findings and a confidence using the nltk tokenizer.
 
     :param search_term: the word to look for
@@ -164,6 +174,8 @@ def search_word_count_nltk(search_term, text, match_threshold, match_algorithm, 
     :type match_algorithm: string
     :param project_name: the project's name
     :type project_name: string
+    :param ignore_case:  a boolean indicating wether case should be ignored or not
+    :type ignore_case: int
     :return: dictionary containing the instances and the average_confidence
     :rtype: dict
     """
@@ -173,6 +185,14 @@ def search_word_count_nltk(search_term, text, match_threshold, match_algorithm, 
     words = word_tokenize(text.read())
 
     for word in words:
+
+        if (ignore_case == 1):
+            compare_word = word.lower()
+            compare_search_term = search_term.lower()
+        else:
+            compare_word = word
+            compare_search_term = search_term
+
         # Calculate Concordance
         concordance = ''
         for x in range(-7, 7):
@@ -183,14 +203,14 @@ def search_word_count_nltk(search_term, text, match_threshold, match_algorithm, 
         current_word += 1
 
         if match_algorithm == 'gestalt':
-            if SequenceMatcher(None, search_term.lower(), word.lower()).ratio() >= match_threshold:
+            if SequenceMatcher(None, compare_search_term, compare_word).ratio() >= match_threshold:
                 confidence.append(SequenceMatcher(None, search_term, word).ratio())
                 instances += 1
                 write_finding(search_term, text, concordance.rstrip(), match_algorithm,
                               SequenceMatcher(None, search_term, word).ratio(),
                               project_name)
         else:
-            if levenshtein(search_term, word) <= match_threshold:
+            if levenshtein(compare_search_term, compare_word) <= match_threshold:
                 confidence.append(levenshtein(search_term, word))
                 instances += 1
                 write_finding(search_term, text, concordance.rstrip(), match_algorithm, levenshtein(search_term, word),
@@ -204,7 +224,7 @@ def search_word_count_nltk(search_term, text, match_threshold, match_algorithm, 
     return {'instances': instances, 'average_confidence': average_confidence}
 
 
-def generate(file_dir, project_name, search_terms_file, tokenizer, match_algorithm, match_threshold, show_preview):
+def generate(file_dir, project_name, search_terms_file, tokenizer, match_algorithm, match_threshold, show_preview, ignore_case):
     """Initate the search process.
 
     :param file_dir: the location of a directory with .txt files
@@ -221,13 +241,15 @@ def generate(file_dir, project_name, search_terms_file, tokenizer, match_algorit
     :type match_threshold: float
     :param show_preview:  a boolean indicating if a preview should be shown to the user
     :type show_preview: int
+    :param ignore_case:  a boolean indicating wether case should be ignored or not
+    :type ignore_case: int
     :note: Goes through the search terms and files one by one, calculating the occurrences
     :return: none
     """
     global max_count, search_term
     max_count = 0
 
-    def search_in_files(search_term, tokenizer, match_algorithm, project_name):
+    def search_in_files(search_term, tokenizer, match_algorithm, project_name, ignore_case):
         """Search a specific search term given a tokenizer and a matching algorithm.
 
         :param search_term: the word to look for
@@ -238,15 +260,17 @@ def generate(file_dir, project_name, search_terms_file, tokenizer, match_algorit
         :type match_algorithm: string
         :param project_name: the project's name
         :type project_name: string
+        :param ignore_case:  a boolean indicating wether case should be ignored or not
+        :type ignore_case: int
         :return: none
         """
         global max_count
         for text in text_files:  # Loop through files
             f = open(file_dir + text, 'r')
             if tokenizer == 'simple':
-                search_result = search_word_count(search_term, f, match_threshold, match_algorithm, project_name)
+                search_result = search_word_count(search_term, f, match_threshold, match_algorithm, project_name, ignore_case)
             else:
-                search_result = search_word_count_nltk(search_term, f, match_threshold, match_algorithm, project_name)
+                search_result = search_word_count_nltk(search_term, f, match_threshold, match_algorithm, project_name, ignore_case)
             search_results[search_term][text] = search_result["instances"]
 
             f.close()
@@ -288,6 +312,7 @@ def generate(file_dir, project_name, search_terms_file, tokenizer, match_algorit
     print('Matching Algorithm: ' + match_algorithm)
     print('Matching Threshold: ' + str(match_threshold))
     print('Tokenizer: ' + str(tokenizer))
+    print('Ignore Case: ' + str(ignore_case))
     print('Show Preview: ' + str(show_preview))
     print('Project: ' + str(no_search_terms) + ' search terms and ' + str(no_text_files) + ' text files')
 
@@ -299,7 +324,7 @@ def generate(file_dir, project_name, search_terms_file, tokenizer, match_algorit
         start_time_term = time.time()
         search_term_counter += 1
         search_term = search_term.rstrip()
-        search_in_files(search_term, tokenizer, match_algorithm, project_name)
+        search_in_files(search_term, tokenizer, match_algorithm, project_name, ignore_case)
         running_times.append(time.time() - start_time_term)
         estimated_time_left = round(numpy.mean(
             numpy.fromiter(iter(running_times), dtype=float) * (no_search_terms - search_term_counter) / 60), 1)
