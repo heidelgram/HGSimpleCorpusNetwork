@@ -21,6 +21,10 @@ Run `runHGSCN.py` and supply the following arguments:
 * project_name (a descriptive name for the batch)
 * search\_terms\_file (a text file with one search term per line)
 
+# Behaviour
+Both matching algorithms will ignore case. Hence, it is possible that there will be findings with a lower threshhold than the one set by the user. 
+Example: Comparing 'test' to 'teST' would result in a 0.5 match. Given a 0.8 threshold, the instance would not be counted. However, since case is ignored, the two terms do match. The instance will be counted and added to the findings table with the correct (0.5) measure.
+
 # Runtime
 The script utilizes a simple linear search algorithm. Hence, the tool currently performs at O(n). The number of files is neglectable, what counts is the number of words and the number of search terms. Doubling the number of words will approximately double the runtime of the script. The same holds true for additional search terms.
 
