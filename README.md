@@ -17,7 +17,7 @@ Run `runHGSCN.py` and supply the following arguments:
 * -ma Matching Algorithm (either 'gestalt' or 'levenshtein')
 * -mt Matching Threshold (n steps for levenshtein or 0-1 for gestalt)
 * -pre Show Preview (either 1 or 0)
-* -icase Ignore case (either 1 or 0)
+* -icase Ignore Case (either 1 or 0)
 * file_dir (the corpus directory)
 * project_name (a descriptive name for the batch)
 * search\_terms\_file (a text file with one search term per line)
