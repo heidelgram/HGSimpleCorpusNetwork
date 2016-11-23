@@ -27,12 +27,14 @@ def main():
                         type=float, default=1.0)
     parser.add_argument('-pre', '--show_preview', help='Show a preview of the network.',
                         type=int, default=0)
+    parser.add_argument('-icase', '--ignore_case', help='Ignore case.',
+                        type=int, default=0)
 
     args = parser.parse_args()
 
     try:
         scn.generate(args.file_dir, args.project_name, args.search_terms_file, args.tokenizer[0],
-                     args.match_algorithm, args.match_threshold, args.show_preview)
+                     args.match_algorithm, args.match_threshold, args.show_preview, args.ignore_case)
     except KeyboardInterrupt:
         print 'Stopping'
     except KeyError:
