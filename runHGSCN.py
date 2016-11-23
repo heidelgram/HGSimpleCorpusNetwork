@@ -9,7 +9,7 @@ def main():
     :return: returns nothing, but starts the program
     :note: initializes the program and takes the user's input.
     """
-    print 'Author-Network-Analysis HGSimpleCorpusNetwork (20.08.2016)\nIngo Kleiber <ikleiber@googlemail.com>\n'
+    print 'Author-Network-Analysis HGSimpleCorpusNetwork (23.11.2016)\nIngo Kleiber <ikleiber@googlemail.com>\n'
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('file_dir', help='The corpus directory containing .txt files', default='corpus/')
     parser.add_argument('project_name', help='The name of the current project.', default='network')

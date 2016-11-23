@@ -130,7 +130,7 @@ def search_word_count(search_term, text, match_threshold, match_algorithm, proje
     for line in text:
         for word in line.split():
             if match_algorithm == 'gestalt':
-                if SequenceMatcher(None, search_term, word).ratio() >= match_threshold:
+                if SequenceMatcher(None, search_term.lower(), word.lower()).ratio() >= match_threshold:
                     confidence.append(SequenceMatcher(None, search_term, word).ratio())
                     instances += 1
                     write_finding(search_term, text, line.rstrip(), match_algorithm,
@@ -183,7 +183,7 @@ def search_word_count_nltk(search_term, text, match_threshold, match_algorithm, 
         current_word += 1
 
         if match_algorithm == 'gestalt':
-            if SequenceMatcher(None, search_term, word).ratio() >= match_threshold:
+            if SequenceMatcher(None, search_term.lower(), word.lower()).ratio() >= match_threshold:
                 confidence.append(SequenceMatcher(None, search_term, word).ratio())
                 instances += 1
                 write_finding(search_term, text, concordance.rstrip(), match_algorithm,
